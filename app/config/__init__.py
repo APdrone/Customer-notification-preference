@@ -2,6 +2,9 @@ import os
 from datetime import timedelta
 
 
+APP_VERSION = os.getenv("APP_VERSION", "")
+
+
 class JWTConfig:
     """JWT configuration settings"""
     

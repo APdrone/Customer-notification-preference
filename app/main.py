@@ -10,11 +10,41 @@ from fastapi import FastAPI, Header
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from app import config as app_config
 from app.health import HealthProbe
 
 SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'dev-secret-key')
 
 app = FastAPI(title='Customer Notification Preferences API')
+
+
+def _get_application_version() -> str:
+    """Return the configured application version, or an empty string if unavailable."""
+    value = getattr(app_config, 'APP_VERSION', '')
+    if value is None:
+        return ''
+    return str(value).strip()
+
+
+# ============================================================================
+# Version Endpoint
+# ============================================================================
+
+@app.get('/version')
+async def version_check():
+    """Return the configured application version as JSON.
+
+    Returns:
+        dict: {"version": "<value>"} with HTTP 200 if configured
+        JSONResponse: {"detail": "Version configuration unavailable"} with HTTP 503 otherwise
+    """
+    version = _get_application_version()
+    if not version:
+        return JSONResponse(
+            status_code=503,
+            content={'detail': 'Version configuration unavailable'}
+        )
+    return {'version': version}
 
 
 # ============================================================================
