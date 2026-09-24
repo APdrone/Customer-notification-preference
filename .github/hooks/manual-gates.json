@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "windows": "powershell -NoProfile -Command \"$input | Out-Null; @{ systemMessage = 'Use workflow/workflow.json for stage order and stop at each manual approval gate.' } | ConvertTo-Json -Compress\"",
+        "timeout": 10
+      }
+    ],
+    "SubagentStart": [
+      {
+        "type": "command",
+        "windows": "powershell -NoProfile -Command \"$input | Out-Null; @{ systemMessage = 'Subagents may prepare artifacts, but only a human can approve advancement through a manual gate.' } | ConvertTo-Json -Compress\"",
+        "timeout": 10
+      }
+    ]
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "storyIndex": "stories/index.json",
+  "storyFolderPattern": "stories/{story_id}/",
+  "stages": [
+    {
+      "id": "requirements",
+      "name": "Requirements",
+      "agent": ".github/agents/requirements.agent.md",
+      "outputTemplate": "stories/{story_id}/requirements.md",
+      "hooks": [
+        ".github/hooks/manual-gates.json"
+      ],
+      "gate": {
+        "id": "requirements-signoff",
+        "type": "manual",
+        "reviewer_roles": ["product-owner", "tech-lead"]
+      }
+    },
+    {
+      "id": "architecture",
+      "name": "Architecture",
+      "agent": ".github/agents/architecture.agent.md",
+      "outputTemplate": "stories/{story_id}/architecture.md",
+      "hooks": [
+        ".github/hooks/manual-gates.json"
+      ],
+      "gate": {
+        "id": "architecture-signoff",
+        "type": "manual",
+        "reviewer_roles": ["tech-lead"]
+      }
+    },
+    {
+      "id": "design-review",
+      "name": "Design Review",
+      "agent": ".github/agents/design-review.agent.md",
+      "outputTemplate": "stories/{story_id}/design-review.md",
+      "hooks": [
+        ".github/hooks/manual-gates.json"
+      ],
+      "gate": {
+        "id": "design-review-signoff",
+        "type": "manual",
+        "reviewer_roles": ["architect", "tech-lead"]
+      }
+    },
+    {
+      "id": "implementation-plan",
+      "name": "Implementation Planning",
+      "agent": ".github/agents/implementation-planner.agent.md",
+      "outputTemplate": "stories/{story_id}/impl-plan.md",
+      "hooks": [
+        ".github/hooks/manual-gates.json"
+      ],
+      "gate": {
+        "id": "implementation-plan-signoff",
+        "type": "manual",
+        "reviewer_roles": ["tech-lead"]
+      }
+    },
+    {
+      "id": "development",
+      "name": "Development",
+      "agent": ".github/agents/development.agent.md",
+      "outputTemplate": "stories/{story_id}/implementation-notes.md",
+      "hooks": [
+        ".github/hooks/manual-gates.json"
+      ],
+      "gate": {
+        "id": "development-signoff",
+        "type": "manual",
+        "reviewer_roles": ["developer", "tech-lead"]
+      }
+    },
+    {
+      "id": "review",
+      "name": "Review",
+      "agent": ".github/agents/review.agent.md",
+      "outputTemplate": "stories/{story_id}/review.md",
+      "hooks": [
+        ".github/hooks/manual-gates.json"
+      ],
+      "gate": {
+        "id": "review-signoff",
+        "type": "manual",
+        "reviewer_roles": ["peer-reviewer"]
+      }
+    },
+    {
+      "id": "qa",
+      "name": "QA",
+      "agent": ".github/agents/qa.agent.md",
+      "outputTemplate": "stories/{story_id}/verify.md",
+      "hooks": [
+        ".github/hooks/manual-gates.json"
+      ],
+      "gate": {
+        "id": "qa-complete",
+        "type": "automatic",
+        "reviewer_roles": []
+      }
+    },
+    {
+      "id": "deployment",
+      "name": "Deployment",
+      "agent": ".github/agents/deployment.agent.md",
+      "outputTemplate": "stories/{story_id}/pr-description.md",
+      "hooks": [
+        ".github/hooks/manual-gates.json"
+      ],
+      "gate": {
+        "id": "deployment-signoff",
+        "type": "manual",
+        "reviewer_roles": ["tech-lead", "release-manager"]
+      }
+    }
+  ]
+}
+

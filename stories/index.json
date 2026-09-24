@@ -1,0 +1,33 @@
+{
+  "active_story": "story-002-manage-customer-notification-preferences",
+  "stories": [
+    {
+      "id": "story-001-automated-documentation-sync",
+      "title": "Automated Documentation Sync",
+      "folder": "stories/story-001-automated-documentation-sync",
+      "source": "copilot-claude-cursor-capstone-project-stmt-v01.pdf",
+      "status": "completed"
+    },
+    {
+      "id": "story-002-manage-customer-notification-preferences",
+      "title": "Manage Customer Notification Preferences",
+      "folder": "stories/story-002-manage-customer-notification-preferences",
+      "source": "JIRA: KAN-2",
+      "status": "requirements-in-progress"
+    },
+    {
+      "id": "story-003-add-customer-profile-api",
+      "title": "Add Customer Profile API",
+      "folder": "stories/story-003-add-customer-profile-api",
+      "source": "JIRA: KAN-3",
+      "status": "requirements-in-progress"
+    },
+    {
+      "id": "story-004-application-health-check-endpoint",
+      "title": "Application Health Check Endpoint",
+      "folder": "stories/story-004-application-health-check-endpoint",
+      "source": "JIRA: KAN-5",
+      "status": "requirements-in-progress"
+    }
+  ]
+}

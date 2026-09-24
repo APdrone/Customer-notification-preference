@@ -1,0 +1,8 @@
+{
+  "manual_gate_expectation": "A human reviewer must approve or reject the stage before the workflow advances.",
+  "decision_values": [
+    "approved",
+    "changes-requested"
+  ],
+  "record_location": "Each stage artifact must update its Approval section with status, reviewer, and notes."
+}
