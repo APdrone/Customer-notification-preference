@@ -1,47 +1,45 @@
-# Implementation Plan: KAN-55 - Customer Notification Preferences API
+# Implementation Plan for Epic KAN-64: Customer Notification Preference API
 
-## Stories & Scope
+## Overview
+This plan covers requirements from Confluence story -18710529, mapped to Jira Epic KAN-64 and stories KAN-65 to KAN-68. It ensures robust handling of notification preference updates, auditing, event publishing, and API documentation/testing.
 
-### KAN-56: GET: Retrieve customer notification preferences
-- Endpoint: `GET /customers/me/preferences`
-- Auth: Validate JWT for customer identity
-- Success: Returns 200 OK and the customer's preferences
-- Failure: Returns 401 Unauthorized if JWT is invalid or missing
+## Objectives
+- Avoid DB writes/events/audits for unchanged preferences.
+- Persist, audit, and publish events for genuine preference changes.
+- Validate input and return RFC 7807 errors for invalid updates.
+- Provide thorough test coverage and documentation.
 
-### KAN-57: PUT: Update customer notification preferences
-- Endpoint: `PUT /customers/me/preferences`
-- Auth: Validate JWT for customer identity
-- Validation: Enforce correct payload schema
-- Success: Update preferences, emit event, log audit, return 200 OK
-- Invalid payload: Return 400 Bad Request
-- Unauth: Return 401 Unauthorized
+## Tasks
+1. **API Enhancement**
+   - Evaluate existing preference retrieval and update endpoints.
+   - Detect and short-circuit unchanged updates (KAN-65).
+   - Ensure genuine changes trigger DB write, audit log, and event (KAN-66).
+   - Implement validation logic with RFC 7807-compliant errors (KAN-67).
+2. **Persistence & Event Publishing**
+   - Update ORM/service logic to persist only new values.
+   - Integrate audit trail mechanisms.
+   - Publish domain events for real changes.
+3. **Testing**
+   - Extend unit/integration tests for unchanged/changed/error scenarios.
+   - Cover concurrency, partial updates, edge cases.
+4. **Documentation**
+   - Update API docs including update, unchanged, error and authentication flows (KAN-68).
+   - Document architectural decisions, open gaps, and enhancements.
 
-### KAN-58: Notification preference-change event publication
-- On successful update, emit event with updated preferences
-- Use mock publisher initially, design for future extensibility
+## Key Decisions
+- Use strong equality check for preferences to detect "unchanged" (excluding metadata/timestamps).
+- Audit log and event publishing only triggered on genuine changes.
+- Validation schemas strictly enforced; malformed input returns RFC 7807 errors.
+- Single consolidated PR with implementation, tests, DB migration, and documentation.
 
-### KAN-59: Audit logging for customer preference updates
-- Record who changed what and when, with old/new values
-- Ensure logging is robust and extensible
+## Open Gaps
+- Partial update semantics.
+- Audit/event contents and criteria.
+- Concurrency safeguards (idempotency, stale writes).
+- Additional edge cases, enhancements (track in follow-up stories).
 
-## Technical Details
-- All endpoints secured with JWT authentication
-- Data access modeled per customer (RBAC, field-level checks if needed)
-- Validations as per schema, errors as RFC 7807 Problem+JSON
-- Interfaces designed for extension to new notification channels
-- API Types, events, and logs must be cleanly separated for eventual migration or refactoring
-
-## Integration & Testing
-- Create API documentation (OpenAPI/Swagger)
-- Implement integration & unit tests for positive and negative cases
-- Include verification of event emission and audit entries
-
-## Gaps & Known Issues
-- Event and audit do not guarantee strict transactional consistency in MVP
-- Audit retention/durability out of scope for initial delivery
-- Notification event publisher is mocked, to be replaced in future stories
+---
 
 ## Next Steps
-- Build endpoints and core domain logic per stories
-- Integrate with test and CI, peer code review
-- Provide documentation for consumers and maintainers
+- Implement all tasks above on feature/KAN-64 branch.
+- Consolidate changes (plan, code, tests, migration) for single PR submission.
