@@ -1,5 +1,5 @@
 {
-  "active_story": "story-002-manage-customer-notification-preferences",
+  "active_story": "story-005-kan-6",
   "stories": [
     {
       "id": "story-001-automated-documentation-sync",
@@ -28,6 +28,13 @@
       "folder": "stories/story-004-application-health-check-endpoint",
       "source": "JIRA: KAN-5",
       "status": "requirements-in-progress"
+    },
+    {
+      "id": "story-005-kan-6",
+      "title": "KAN-6",
+      "folder": "stories/story-005-kan-6",
+      "source": "JIRA: KAN-6",
+      "status": "completed"
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 ## Objective
 
-Use this repository to drive the capstone workflow from requirements through deployment using GitHub Copilot custom agents, instructions, hooks, and skills.
+Use this repository to drive the capstone workflow from requirements through PR merge using GitHub Copilot custom agents, instructions, hooks, and skills.
 
 ## Source-of-truth rules
 
@@ -18,8 +18,8 @@ Use this repository to drive the capstone workflow from requirements through dep
 - The QA stage is automatic in the workflow definition, but it must still produce evidence before deployment proceeds.
 - Do not bypass approval sections in story artifacts under `stories/<story-id>/`.
 - Every specialist subagent must have a matching instruction file in `.github/instructions/` and a matching skill in `.github/skills/`.
-- Development owns application changes; QA owns test design and evidence; Deployment owns final PR and release handoff.
-- Preserve evidence needed by Review, QA, and Deployment without inventing results or outcomes.
+- Development owns application changes; QA owns test design and evidence; Deployment owns final PR handoff; PR Merge owns the repository branch, pull request, and merge actions.
+- Preserve evidence needed by Review, QA, Deployment, and PR Merge without inventing results or outcomes.
 
 ## Source story rules
 
@@ -34,7 +34,7 @@ Use this repository to drive the capstone workflow from requirements through dep
 - Start from `.github/agents/orchestrator.agent.md` to coordinate the workflow.
 - Use only the stage-specific agent that owns the current output.
 - Keep edits minimal and scoped to the current story and current stage.
-- Route implementation work to the Development agent, test design and execution to the QA agent, and final PR or release handoff to the Deployment agent.
+- Route implementation work to the Development agent, test design and execution to the QA agent, PR handoff authoring to the Deployment agent, and final repository PR/merge execution to the PR Merge agent.
 
 ## State rule
 
@@ -43,6 +43,6 @@ Use this repository to drive the capstone workflow from requirements through dep
 
 ## Review and acceptance standard
 
-- Evaluate correctness, security, error handling, test coverage, clarity, duplication, and dependency safety before deployment handoff.
+- Evaluate correctness, security, error handling, test coverage, clarity, duplication, and dependency safety before PR merge.
 - Require concrete evidence for every claim in review and QA outputs.
 - Treat missing evidence as a blocker, not an assumption.

@@ -10,7 +10,7 @@ Use GitHub Copilot custom agents in `.github/agents/` as the orchestration layer
 - Capture the approval decision in the stage artifact before advancing.
 - Do not invent missing requirements, reviewer decisions, or test evidence.
 - Give every specialist subagent one matching instruction file under `.github/instructions/` and one matching skill under `.github/skills/`.
-- Route code changes through Development, test generation through QA, and PR or release handoff through Deployment.
+- Route code changes through Development, test generation through QA, PR handoff authoring through Deployment, and final repository actions through PR Merge.
 
 ## Story selection
 
@@ -34,9 +34,11 @@ Use GitHub Copilot custom agents in `.github/agents/` as the orchestration layer
 - Review: `stories/<story-id>/review.md`
 - QA verification: `stories/<story-id>/verify.md`
 - Deployment handoff: `stories/<story-id>/pr-description.md`
+- PR merge record: `stories/<story-id>/pr-merge.md`
 
 ## Specialist expectations
 
 - Review must use the capstone checklist for correctness, security, error handling, test coverage, clarity, DRY, and dependency safety.
 - QA must design and create unit tests, integration tests, and output quality checks using explicit QA principles.
 - Deployment must own the final PR description sections and the release handoff needed to complete the workflow.
+- PR Merge must own the feature branch, pull request creation, merge outcome, and final repository-state evidence.

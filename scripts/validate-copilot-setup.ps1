@@ -9,6 +9,7 @@ $requiredPaths = @(
   ".github/agents/review.agent.md",
   ".github/agents/qa.agent.md",
   ".github/agents/deployment.agent.md",
+  ".github/agents/pr-merge.agent.md",
   ".github/prompts/run-capstone-stage.prompt.md",
   ".github/prompts/request-approval.prompt.md",
   ".github/instructions/capstone-artifacts.instructions.md",
@@ -20,6 +21,7 @@ $requiredPaths = @(
   ".github/instructions/review-stage.instructions.md",
   ".github/instructions/qa-stage.instructions.md",
   ".github/instructions/deployment-stage.instructions.md",
+  ".github/instructions/pr-merge-stage.instructions.md",
   ".github/hooks/manual-gates.json",
   ".github/ai-state.json",
   ".github/skills/requirements-specialist/SKILL.md",
@@ -30,6 +32,7 @@ $requiredPaths = @(
   ".github/skills/review-specialist/SKILL.md",
   ".github/skills/qa-specialist/SKILL.md",
   ".github/skills/deployment-specialist/SKILL.md",
+  ".github/skills/pr-merge-specialist/SKILL.md",
   "workflow/workflow.json",
   "stories/index.json",
   "stories/README.md",
@@ -41,7 +44,8 @@ $requiredPaths = @(
   "stories/_template/implementation-notes.md",
   "stories/_template/review.md",
   "stories/_template/verify.md",
-  "stories/_template/pr-description.md"
+  "stories/_template/pr-description.md",
+  "stories/_template/pr-merge.md"
 )
 
 $missing = $requiredPaths | Where-Object { -not (Test-Path $_) }
@@ -75,7 +79,8 @@ $activeStoryRequired = @(
   "$activeStoryFolder/implementation-notes.md",
   "$activeStoryFolder/review.md",
   "$activeStoryFolder/verify.md",
-  "$activeStoryFolder/pr-description.md"
+  "$activeStoryFolder/pr-description.md",
+  "$activeStoryFolder/pr-merge.md"
 )
 
 $activeStoryMissing = $activeStoryRequired | Where-Object { -not (Test-Path $_) }

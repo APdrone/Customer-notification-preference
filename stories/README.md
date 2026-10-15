@@ -13,4 +13,4 @@ This folder separates reusable orchestration from story-specific work.
 - `story-001-automated-documentation-sync`
 - `story-002-confluence-release-notes-sync`
 
-Each story folder contains its own stage artifacts, review history, verification notes, and PR-prep document.
+Each story folder contains its own stage artifacts, review history, verification notes, PR handoff document, and final PR merge record.

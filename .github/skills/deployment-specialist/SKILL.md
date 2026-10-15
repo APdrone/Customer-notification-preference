@@ -1,19 +1,19 @@
 ---
 name: deployment-specialist
-description: "Use when the Deployment Specialist needs a checklist for final PR or release handoff, evidence packaging, and GitHub pull request creation."
+description: "Use when the Deployment Specialist needs a checklist for final PR handoff packaging and release evidence before the PR Merge stage executes GitHub actions."
 ---
 
 # Deployment Specialist Skill
 
 ## Goals
 
-- Package the approved work for final human approval.
+- Package the approved work for the automated PR Merge stage.
 - Preserve verified evidence without rewriting it.
-- Complete the GitHub handoff cleanly.
+- Complete the deployment handoff cleanly.
 
 ## Checklist
 
 - Confirm repository and branch targets.
 - Pull summary, changes, tests, and limitations from story artifacts.
 - Capture release blockers and rollback notes.
-- Create the PR and update workflow state with the resulting URL.
+- Hand off the final PR title, body, and repository context to the PR Merge stage.

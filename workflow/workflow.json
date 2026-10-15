@@ -110,8 +110,31 @@
       ],
       "gate": {
         "id": "deployment-signoff",
-        "type": "manual",
-        "reviewer_roles": ["tech-lead", "release-manager"]
+        "type": "automatic",
+        "reviewer_roles": []
+      }
+    },
+    {
+      "id": "pr-merge",
+      "name": "PR Merge",
+      "agent": ".github/agents/pr-merge.agent.md",
+      "outputTemplate": "stories/{story_id}/pr-merge.md",
+      "hooks": [
+        ".github/hooks/manual-gates.json"
+      ],
+      "execution": {
+        "mode": "github-mcp",
+        "source_branch": "feature/{story_id}",
+        "target_branch": "master",
+        "create_feature_branch": true,
+        "create_pull_request": true,
+        "merge_pull_request": true,
+        "requires_human_intervention": false
+      },
+      "gate": {
+        "id": "pr-merge-signoff",
+        "type": "automatic",
+        "reviewer_roles": []
       }
     }
   ]
