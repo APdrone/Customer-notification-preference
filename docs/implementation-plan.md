@@ -1,45 +1,27 @@
-# Implementation Plan for Epic KAN-64: Customer Notification Preference API
+# Implementation Plan for Epic KAN-83: Display Last Login Date on User Profile
 
-## Overview
-This plan covers requirements from Confluence story -18710529, mapped to Jira Epic KAN-64 and stories KAN-65 to KAN-68. It ensures robust handling of notification preference updates, auditing, event publishing, and API documentation/testing.
+## 1. Scope Boundaries & Jira Traceability
+- Epic: KAN-83
+- Story: KAN-84 (Display last successful login date on user profile)
+- Out of scope: Changes to login logic, notification systems, or any user authentication mechanism. Strictly display logic only.
+- Traceability: All commits reference Epic KAN-83 and Story KAN-84.
 
-## Objectives
-- Avoid DB writes/events/audits for unchanged preferences.
-- Persist, audit, and publish events for genuine preference changes.
-- Validate input and return RFC 7807 errors for invalid updates.
-- Provide thorough test coverage and documentation.
+## 2. Milestones & Task Breakdown
+- Milestone 1: Identify and retrieve last successful login data from existing storage or authentication logs
+- Milestone 2: Implement display logic on user profile page (create/update frontend component or backend API as needed)
+- Milestone 3: Handle edge case—users with no login date
+- Milestone 4: Add automated tests (unit & integration) for display, including edge cases
+- Milestone 5: Documentation/Readme update for feature
 
-## Tasks
-1. **API Enhancement**
-   - Evaluate existing preference retrieval and update endpoints.
-   - Detect and short-circuit unchanged updates (KAN-65).
-   - Ensure genuine changes trigger DB write, audit log, and event (KAN-66).
-   - Implement validation logic with RFC 7807-compliant errors (KAN-67).
-2. **Persistence & Event Publishing**
-   - Update ORM/service logic to persist only new values.
-   - Integrate audit trail mechanisms.
-   - Publish domain events for real changes.
-3. **Testing**
-   - Extend unit/integration tests for unchanged/changed/error scenarios.
-   - Cover concurrency, partial updates, edge cases.
-4. **Documentation**
-   - Update API docs including update, unchanged, error and authentication flows (KAN-68).
-   - Document architectural decisions, open gaps, and enhancements.
+## 3. Technical Risks & Mitigation
+- Risk: Data source for last login may not record successful logins (Mitigation: Clarify with backend team or fallback to latest available login event)
+- Risk: Format inconsistencies or UI layout breaks (Mitigation: Use centralized date formatting utility; test on all supported browsers/devices)
+- Risk: Performance impact if login data is calculated on-the-fly (Mitigation: Cache or store last login date efficiently)
 
-## Key Decisions
-- Use strong equality check for preferences to detect "unchanged" (excluding metadata/timestamps).
-- Audit log and event publishing only triggered on genuine changes.
-- Validation schemas strictly enforced; malformed input returns RFC 7807 errors.
-- Single consolidated PR with implementation, tests, DB migration, and documentation.
-
-## Open Gaps
-- Partial update semantics.
-- Audit/event contents and criteria.
-- Concurrency safeguards (idempotency, stale writes).
-- Additional edge cases, enhancements (track in follow-up stories).
+## 4. Target Testing & Rollout Strategy
+- Unit and integration tests covering: normal login, no prior login, invalid login data
+- Manual QA by specified tester using test accounts (including accounts with/without prior logins)
+- Rollout: Feature flagged if needed; soft launch in staging before production deployment
 
 ---
-
-## Next Steps
-- Implement all tasks above on feature/KAN-64 branch.
-- Consolidate changes (plan, code, tests, migration) for single PR submission.
+All deliverables are to be committed on branch feature/KAN-83 per Dev Lead hygiene guidelines. PR will link KAN-83 (Epic) and KAN-84 (Story) and include implementation plan, code, migration (if any), and test assets.
