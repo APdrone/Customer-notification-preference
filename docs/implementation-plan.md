@@ -1,45 +1,39 @@
-# Implementation Plan for Epic KAN-64: Customer Notification Preference API
+# Implementation Plan: KAN-92
 
-## Overview
-This plan covers requirements from Confluence story -18710529, mapped to Jira Epic KAN-64 and stories KAN-65 to KAN-68. It ensures robust handling of notification preference updates, auditing, event publishing, and API documentation/testing.
+## 1. Scope & Boundaries
+- In-Scope:
+  - Update user profile UI to display the last login date based on US-106 requirements.
+  - Display "last login date" next to user address/email.
+  - Show "No activity yet" if the user has never logged in.
+  - Ensure date format matches existing application style.
+  - Confirmation messages for address copying use the app’s notification system.
+  - Automated tests for UI and display logic.
+- Out-of-Scope:
+  - Backend/session tracking or changes (assume data source exists).
+  - User address editing, email verification updates.
+  - Any unrelated profile enhancements or refactorings.
 
-## Objectives
-- Avoid DB writes/events/audits for unchanged preferences.
-- Persist, audit, and publish events for genuine preference changes.
-- Validate input and return RFC 7807 errors for invalid updates.
-- Provide thorough test coverage and documentation.
+## 2. Milestones & Task Breakdown
+- [x] Branch feature/KAN-92 created from master.
+- [ ] UI modifications to fetch and display last login date.
+- [ ] String constants and i18n update as needed for new UI text.
+- [ ] Unit and integration test automation for last login display logic.
+- [ ] Manual QA in local containerized environment.
+- [ ] Documentation update if needed.
 
-## Tasks
-1. **API Enhancement**
-   - Evaluate existing preference retrieval and update endpoints.
-   - Detect and short-circuit unchanged updates (KAN-65).
-   - Ensure genuine changes trigger DB write, audit log, and event (KAN-66).
-   - Implement validation logic with RFC 7807-compliant errors (KAN-67).
-2. **Persistence & Event Publishing**
-   - Update ORM/service logic to persist only new values.
-   - Integrate audit trail mechanisms.
-   - Publish domain events for real changes.
-3. **Testing**
-   - Extend unit/integration tests for unchanged/changed/error scenarios.
-   - Cover concurrency, partial updates, edge cases.
-4. **Documentation**
-   - Update API docs including update, unchanged, error and authentication flows (KAN-68).
-   - Document architectural decisions, open gaps, and enhancements.
+## 3. Risks & Mitigations
+- Risk: Data source for last login date may be missing or inconsistent.
+  - Mitigation: UI should gracefully handle null/undefined dates (show "No activity yet").
+- Risk: Inconsistent date formatting.
+  - Mitigation: Use app’s utility for formatting.
+- Risk: Overlapping work with other profile UI changes.
+  - Mitigation: Merge strategy and clear comms with team.
+- No backend changes or migrations required.
 
-## Key Decisions
-- Use strong equality check for preferences to detect "unchanged" (excluding metadata/timestamps).
-- Audit log and event publishing only triggered on genuine changes.
-- Validation schemas strictly enforced; malformed input returns RFC 7807 errors.
-- Single consolidated PR with implementation, tests, DB migration, and documentation.
-
-## Open Gaps
-- Partial update semantics.
-- Audit/event contents and criteria.
-- Concurrency safeguards (idempotency, stale writes).
-- Additional edge cases, enhancements (track in follow-up stories).
-
----
-
-## Next Steps
-- Implement all tasks above on feature/KAN-64 branch.
-- Consolidate changes (plan, code, tests, migration) for single PR submission.
+## 4. Test Strategy
+- Validate last login date appears for users with valid login timestamps.
+- Validate "No activity yet" appears for users without a login.
+- Negative testing for null/malformed data.
+- Automated UI/unit tests.
+- Manual smoke test in local Docker/dev environment.
+- Idempotency: Repeated profile loads always show accurate current state.
