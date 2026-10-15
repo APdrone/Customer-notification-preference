@@ -1,31 +1,21 @@
-import json
-from typing import Dict, Any
-from fastapi import APIRouter, Request, HTTPException, status
-from src.models import NotificationPreferences
-from src.database import get_preferences_from_db, update_preferences_in_db, audit_preferences_change, publish_event
-from src.errors import RFC7807ValidationError
+from flask import Blueprint, request, jsonify
+from models import CustomerPreference, db
 
-router = APIRouter()
+preferences_bp = Blueprint('preferences', __name__)
 
-@router.put("/preferences", response_model=NotificationPreferences)
-def update_preferences(request: Request, prefs: NotificationPreferences):
-    customer_id = request.headers.get("X-Customer-ID")
-    if not customer_id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing customer ID")
-    try:
-        # Validate preferences (raise RFC7807ValidationError if invalid)
-        prefs.validate()
-    except RFC7807ValidationError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=e.to_rfc7807_dict()
-        )
-    existing = get_preferences_from_db(customer_id)
-    if existing == prefs.dict():
-        # Idempotent: nothing changed. Do not audit/event. Return 200 or 204.
-        return {"detail": "No changes", "preferences": existing}
-    # Genuine update: persist, audit, event
-    update_preferences_in_db(customer_id, prefs.dict())
-    audit_preferences_change(customer_id, prefs.dict())
-    publish_event("preference_changed", customer_id, prefs.dict())
-    return prefs.dict()
+@preferences_bp.route('/preferences', methods=['POST'])
+def set_preferences():
+    user_id = request.json.get('user_id')
+    submitted_prefs = request.json.get('preferences')
+    stored = CustomerPreference.query.filter_by(user_id=user_id).first()
+    if stored and stored.preferences == submitted_prefs:
+        # Prefer 204 No Content; fallback to 200 OK
+        return ('', 204)
+    if stored:
+        stored.preferences = submitted_prefs
+    else:
+        stored = CustomerPreference(user_id=user_id, preferences=submitted_prefs)
+        db.session.add(stored)
+    db.session.commit()
+    # Emit preference update event only if updated
+    return jsonify({'status': 'updated'})
