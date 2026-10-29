@@ -1,9 +1,0 @@
-{
-  "manual_gate_expectation": "Human review is advisory for the SDLC process; validation evidence and automated checks determine progress when no blocker remains.",
-  "decision_values": [
-    "approved",
-    "changes-requested",
-    "auto-approved"
-  ],
-  "record_location": "Each stage artifact should record approval state, reviewer or automation source, and notes when evidence exists."
-}
