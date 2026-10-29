@@ -103,6 +103,15 @@ class Preferences(BaseModel):
     push_notification: bool = False
 
 
+class Address(BaseModel):
+    """Customer address model for profile and form workflows"""
+    street: str = ""
+    city: str = ""
+    state: str = ""
+    postal_code: str = ""
+    country: str = ""
+
+
 class ProblemDetailException(Exception):
     def __init__(self, status: int, title: str, detail: str, instance: str = '') -> None:
         self.status = status
@@ -130,10 +139,17 @@ async def problem_detail_exception_handler(_, exc: ProblemDetailException):
 
 
 PREFERENCE_STORE: Dict[str, Preferences] = {}
+ADDRESS_STORE: Dict[str, Address] = {}
+DRAFT_FORM_STORE: Dict[str, Dict[str, Any]] = {}
 
 
 def _default_preferences() -> Preferences:
     return Preferences(email=False, sms=False, push_notification=False)
+
+
+def _default_address() -> Address:
+    """Return default empty address"""
+    return Address(street="", city="", state="", postal_code="", country="")
 
 
 def _encode_segment(value: Any) -> str:
@@ -156,13 +172,13 @@ def create_token(customer_id: str) -> str:
     return f"{_encode_segment(header)}.{_encode_segment(payload)}.{signature_segment}"
 
 
-def _get_customer_id_from_token(authorization: str | None) -> str:
+def _get_customer_id_from_token(authorization: str | None, instance: str = '/customers/me/preferences') -> str:
     if not authorization or not authorization.startswith('Bearer '):
         raise ProblemDetailException(
             status=401,
             title='Unauthorized',
             detail='Authentication credentials were not provided or are invalid.',
-            instance='/customers/me/preferences',
+            instance=instance,
         )
 
     token = authorization.replace('Bearer ', '', 1)
@@ -173,7 +189,7 @@ def _get_customer_id_from_token(authorization: str | None) -> str:
             status=401,
             title='Unauthorized',
             detail='Authentication credentials were not provided or are invalid.',
-            instance='/customers/me/preferences',
+            instance=instance,
         ) from exc
 
     signing_input = f'{header_segment}.{payload_segment}'.encode('utf-8')
@@ -185,7 +201,7 @@ def _get_customer_id_from_token(authorization: str | None) -> str:
             status=401,
             title='Unauthorized',
             detail='Authentication credentials were not provided or are invalid.',
-            instance='/customers/me/preferences',
+            instance=instance,
         )
 
     try:
@@ -195,7 +211,7 @@ def _get_customer_id_from_token(authorization: str | None) -> str:
             status=401,
             title='Unauthorized',
             detail='Authentication credentials were not provided or are invalid.',
-            instance='/customers/me/preferences',
+            instance=instance,
         ) from exc
 
     exp = payload.get('exp')
@@ -204,7 +220,7 @@ def _get_customer_id_from_token(authorization: str | None) -> str:
             status=401,
             title='Unauthorized',
             detail='Authentication credentials were not provided or are invalid.',
-            instance='/customers/me/preferences',
+            instance=instance,
         )
 
     customer_id = payload.get('sub')
@@ -213,7 +229,7 @@ def _get_customer_id_from_token(authorization: str | None) -> str:
             status=401,
             title='Unauthorized',
             detail='Authentication credentials were not provided or are invalid.',
-            instance='/customers/me/preferences',
+            instance=instance,
         )
 
     return str(customer_id)
@@ -234,3 +250,66 @@ async def update_preferences(
     customer_id = _get_customer_id_from_token(authorization)
     PREFERENCE_STORE[customer_id] = payload
     return payload.model_dump()
+# ============================================================================
+# Address API Routes (KAN-95)
+# ============================================================================
+
+@app.get('/customers/me/address')
+async def get_customer_address(authorization: str | None = Header(default=None, alias='Authorization')):
+    """Get the authenticated customer address from their profile.
+    
+    Returns the customer stored address or default empty address if none exists.
+    
+    Returns:
+        dict: Address data with street, city, state, postal_code, country
+        
+    Raises:
+        ProblemDetailException: 401 if authentication fails
+    """
+    customer_id = _get_customer_id_from_token(authorization, instance='/customers/me/address')
+    address = ADDRESS_STORE.setdefault(customer_id, _default_address())
+    return address.model_dump()
+
+
+@app.post('/forms/{draft_id}/address:copyFromProfile')
+async def copy_address_from_profile(
+    draft_id: str,
+    authorization: str | None = Header(default=None, alias='Authorization')
+):
+    """Copy customer profile address into a form draft.
+    
+    This endpoint implements the copy user address data into form workflow.
+    It retrieves the authenticated customer address and copies it to the
+    specified draft form.
+    
+    Args:
+        draft_id: Unique identifier for the draft form
+        authorization: Bearer token for authentication
+        
+    Returns:
+        dict: Response containing draft_id, copied address data, and status
+        
+    Raises:
+        ProblemDetailException: 401 if authentication fails
+    """
+    customer_id = _get_customer_id_from_token(
+        authorization, 
+        instance=f'/forms/{draft_id}/address:copyFromProfile'
+    )
+    
+    # Get customer address from profile
+    address = ADDRESS_STORE.setdefault(customer_id, _default_address())
+    
+    # Initialize draft form if it does not exist
+    if draft_id not in DRAFT_FORM_STORE:
+        DRAFT_FORM_STORE[draft_id] = {}
+    
+    # Copy address to form draft
+    DRAFT_FORM_STORE[draft_id]['address'] = address.model_dump()
+    DRAFT_FORM_STORE[draft_id]['customer_id'] = customer_id
+    
+    return {
+        'draft_id': draft_id,
+        'address': address.model_dump(),
+        'status': 'copied'
+    }
