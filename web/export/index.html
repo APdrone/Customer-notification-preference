@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Notification Preferences - Export demo (KAN-100)</title>
+  </head>
+  <body>
+    <h1>Notification Preferences</h1>
+    <p><strong>Demo page.</strong> Customer id and preference values are stubs.</p>
+    <p>Loaded preferences: <code id="prefs"></code></p>
+    <button id="load" type="button">Load stub preferences</button>
+    <!-- Shown only when preferences are loaded -->
+    <button id="export" type="button" hidden>Export Preferences JSON</button>
+    <div id="banner" role="alert" hidden></div>
+    <!-- ES modules require serving over http, e.g. python -m http.server run in web/ -->
+    <script type="module" src="./demo.js"></script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "customer-notification-web",
+  "private": true,
+  "type": "module",
+  "description": "Client-side modules (no dependencies). Tests use the built-in node:test runner.",
+  "scripts": {
+    "test": "node --test"
+  }
+}
