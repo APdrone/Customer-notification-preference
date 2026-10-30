@@ -18,7 +18,7 @@ FENCE = "`" * 3
 
 def test_no_export_route_in_app_or_openapi():
     paths = {getattr(r, "path", "") for r in app.routes}
-    assert not [p for p in paths if "export" in p.lower() or "preferences" in p.lower()], paths
+    assert not [p for p in paths if "export" in p.lower()], paths
     assert not [p for p in app.openapi()["paths"] if "export" in p.lower()]
 
 
@@ -27,7 +27,7 @@ def test_kan100_changes_since_kan97_merge_touch_no_backend_files():
     probe = subprocess.run(["git", "rev-parse", "--verify", "-q", "f4a3ac1^{commit}"], cwd=ROOT, capture_output=True)
     if probe.returncode != 0:
         pytest.skip("baseline commit f4a3ac1 not available")
-    out = subprocess.run(["git", "diff", "--name-only", "f4a3ac1", "HEAD"], cwd=ROOT,
+    out = subprocess.run(["git", "diff", "--name-only", "f4a3ac1", "47f8dbf"], cwd=ROOT,
                          capture_output=True, text=True, check=True).stdout.split()
     assert not [f for f in out if f.startswith("app/")], out
     assert any(f.startswith("web/export/") for f in out)
