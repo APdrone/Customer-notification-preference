@@ -1,0 +1,1 @@
+"""Customer notification preference storage."""
